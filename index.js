@@ -2,6 +2,7 @@ var fs = require('fs'),
     p = require('path');
 
 module.exports = function (ddoc_dir) {
+    ddoc_dir = p.resolve(p.dirname(module.parent.filename), ddoc_dir);
     function objFromDir(dir) {
         var obj = {},
             files = fs.readdirSync(dir);
