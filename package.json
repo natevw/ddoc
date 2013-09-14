@@ -1,6 +1,6 @@
 {
   "name": "ddoc",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "require() a traditional couchapp into your node code",
   "main": "index.js",
   "scripts": {

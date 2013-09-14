@@ -24,7 +24,6 @@ module.exports = function (ddoc_dir) {
                 console.warn("Skipping ", path);
             }
         });
-        console.log("obj is", obj);
         return obj;
     }
     return objFromDir(ddoc_dir);   
