@@ -14,12 +14,11 @@ module.exports = function (ddoc_dir) {
             } else if (type.isFile()) {
                 var data = fs.readFileSync(path, 'utf8');
                 if (p.extname(file) === '.js') {        // eval(-ish…actually has to handle bare `function () {}` *and* CommonJS modules!)
-                    // hack from https://github.com/iriscouch/couchjs/blob/71335aac1901a279aff213973f5508b0bc241e31/couchjs.js#L79
-                    data = data.replace(/;+$/, '');
-                    // TODO: we'll still bork on multi-statement modules, probably need separate codepaths for each style
+                    // HACK: name first anonymous function "found" — even if it's actually in a comment/string/whatnot :-/
+                    data = data.replace(/function\s*\(/, "function __anon(");
                     
-                    var module = {exports:{}};
-                    obj[p.basename(file,'.js')] = Function('require', 'module', 'exports', "return ("+data+");")(function (module) {
+                    var module = {exports:{}};          // NOTE: probably doesn't handle `module.exports = {}; exports.foo = 42;` like CommonJS would?
+                    obj[p.basename(file,'.js')] = Function('require', 'module', 'exports', "var __anon; eval("+JSON.stringify(data)+"); return __anon;")(function (module) {
                         return require(p.join(ddoc_dir,module));
                     }, module, module.exports) || module.exports;
                 } else if (p.extname(file) === '.json') {
